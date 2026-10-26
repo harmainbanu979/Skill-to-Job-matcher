@@ -1,143 +1,131 @@
+
 import streamlit as st
 
-# ============================================================
-# SKILL-TO-JOB MATCHER
-# Complete Mini Project - Python + Streamlit
-# ============================================================
-
-# ---------------- PAGE CONFIGURATION ----------------
-
+# =========================================================
+# PAGE CONFIGURATION
+# =========================================================
 st.set_page_config(
     page_title="Skill-to-Job Matcher",
     page_icon="💼",
     layout="wide"
 )
 
-# ---------------- CUSTOM CSS ----------------
-
+# =========================================================
+# CUSTOM CSS - LIGHT BACKGROUND AND READABLE TEXT
+# =========================================================
 st.markdown("""
 <style>
-
-.main {
+.stApp {
     background-color: #f5f7fb;
+    color: #1f2937;
+}
+
+.stApp h1, .stApp h2, .stApp h3,
+.stApp p, .stApp label, .stApp li {
+    color: #1f2937;
 }
 
 .title {
     text-align: center;
-    font-size: 42px;
+    font-size: 40px;
     font-weight: bold;
+    color: #1d4ed8;
     margin-bottom: 5px;
 }
 
 .subtitle {
     text-align: center;
     font-size: 18px;
-    color: gray;
-    margin-bottom: 30px;
+    color: #475569;
+    margin-bottom: 25px;
 }
 
 .card {
+    background-color: #ffffff;
+    color: #1f2937;
     padding: 20px;
     border-radius: 12px;
-    background-color: white;
-    box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+    border: 1px solid #dbe3ef;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    margin-bottom: 12px;
 }
 
 .job-title {
-    font-size: 25px;
+    font-size: 24px;
     font-weight: bold;
+    color: #1d4ed8;
 }
 
 .match-score {
     font-size: 20px;
     font-weight: bold;
+    color: #15803d;
+}
+
+div.stButton > button {
+    background-color: #2563eb;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+}
+
+div.stButton > button p {
+    color: white !important;
+}
+
+div.stButton > button:hover {
+    background-color: #1d4ed8;
+    color: white;
+}
+
+[data-testid="stSidebar"] {
+    background-color: #eaf0fa;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-
-# ============================================================
-# JOB DATA
-# ============================================================
-
+# =========================================================
+# JOB ROLES AND REQUIRED SKILLS
+# =========================================================
 jobs = {
-
     "Data Analyst": [
-        "Python",
-        "SQL",
-        "Excel",
-        "Power BI",
-        "Tableau"
+        "Python", "SQL", "Excel", "Power BI", "Tableau"
     ],
-
     "Data Scientist": [
-        "Python",
-        "SQL",
-        "Pandas",
-        "NumPy",
-        "Machine Learning",
-        "TensorFlow"
+        "Python", "SQL", "Pandas", "NumPy",
+        "Machine Learning", "TensorFlow"
     ],
-
     "Python Developer": [
-        "Python",
-        "Django",
-        "SQL",
-        "Git"
+        "Python", "Django", "SQL", "Git"
     ],
-
     "Java Developer": [
-        "Java",
-        "SQL",
-        "Git",
-        "Spring Boot"
+        "Java", "SQL", "Git", "Spring Boot"
     ],
-
     "Web Developer": [
-        "HTML",
-        "CSS",
-        "JavaScript",
-        "React",
-        "Git"
+        "HTML", "CSS", "JavaScript", "React", "Git"
     ],
-
     "Machine Learning Engineer": [
-        "Python",
-        "Pandas",
-        "NumPy",
-        "Machine Learning",
-        "TensorFlow"
+        "Python", "Pandas", "NumPy",
+        "Machine Learning", "TensorFlow"
     ],
-
     "Full Stack Developer": [
-        "HTML",
-        "CSS",
-        "JavaScript",
-        "React",
-        "Python",
-        "SQL",
-        "Git"
+        "HTML", "CSS", "JavaScript",
+        "React", "Python", "SQL", "Git"
     ]
 }
 
-
-# ============================================================
-# ALL AVAILABLE SKILLS
-# ============================================================
-
-all_skills = sorted(set(
+all_skills = sorted({
     skill
-    for job_skills in jobs.values()
-    for skill in job_skills
-))
+    for skill_list in jobs.values()
+    for skill in skill_list
+})
 
-
-# ============================================================
+# =========================================================
 # HEADER
-# ============================================================
-
+# =========================================================
 st.markdown(
     '<div class="title">💼 Skill-to-Job Matcher</div>',
     unsafe_allow_html=True
@@ -145,434 +133,295 @@ st.markdown(
 
 st.markdown(
     '<div class="subtitle">'
-    'Find the right job based on your skills'
+    'Find suitable job roles based on your skills'
     '</div>',
     unsafe_allow_html=True
 )
 
 st.divider()
 
-
-# ============================================================
-# USER INFORMATION
-# ============================================================
-
+# =========================================================
+# CANDIDATE INFORMATION
+# =========================================================
 st.header("👤 Candidate Information")
 
 col1, col2 = st.columns(2)
 
 with col1:
-
     name = st.text_input(
         "Enter Your Name",
         placeholder="Example: Harmain Banu"
     )
 
 with col2:
-
     email = st.text_input(
-        "Enter Your Email",
+        "Enter Your Email (optional)",
         placeholder="Example: example@gmail.com"
     )
 
-
-# ============================================================
-# PREFERRED JOB
-# ============================================================
+# =========================================================
+# JOB PREFERENCE
+# =========================================================
+st.header("🎯 Job Preference")
 
 preferred_job = st.selectbox(
-    "🎯 Select Your Preferred Job Role",
+    "Select your preferred job role",
     ["No Preference"] + list(jobs.keys())
 )
 
-
-# ============================================================
+# =========================================================
 # SKILL SELECTION
-# ============================================================
-
+# =========================================================
 st.header("🛠️ Your Skills")
 
 selected_skills = st.multiselect(
-    "Select the skills you currently have:",
-    all_skills,
-    placeholder="Choose your skills"
+    "Select the skills you currently have",
+    options=all_skills,
+    placeholder="Choose one or more skills"
 )
-
-
-# ============================================================
-# CUSTOM SKILLS
-# ============================================================
-
-st.write("### ➕ Add Other Skills")
 
 custom_skills = st.text_input(
-    "Enter additional skills separated by commas",
-    placeholder="Example: AWS, Docker, C++, Linux"
+    "Add other skills (separate them with commas)",
+    placeholder="Example: AWS, Docker, Linux"
 )
 
-if custom_skills:
-
+if custom_skills.strip():
     extra_skills = [
         skill.strip()
         for skill in custom_skills.split(",")
         if skill.strip()
     ]
-
     selected_skills = selected_skills + extra_skills
 
-
-# ============================================================
-# FIND MATCH BUTTON
-# ============================================================
+st.caption(
+    "Tip: Select all the skills you know to get a more accurate match."
+)
 
 st.divider()
 
+# =========================================================
+# FIND JOB MATCHES
+# =========================================================
 find_button = st.button(
     "🔍 FIND MY JOB MATCHES",
     use_container_width=True
 )
 
-
-# ============================================================
-# JOB MATCHING
-# ============================================================
-
 if find_button:
 
-    # ---------------- VALIDATION ----------------
-
-    if not name:
-
-        st.error("❌ Please enter your name.")
+    if not name.strip():
+        st.error("Please enter your name.")
 
     elif not selected_skills:
-
-        st.error("❌ Please select at least one skill.")
+        st.error("Please select at least one skill.")
 
     else:
-
-        # Convert user skills to lowercase
-        user_skills = [
-            skill.lower().strip()
+        # Make matching case-insensitive.
+        user_skills = {
+            skill.strip().casefold()
             for skill in selected_skills
-        ]
+            if skill.strip()
+        }
+
+        # Select one job or compare all jobs.
+        if preferred_job == "No Preference":
+            jobs_to_check = jobs.items()
+        else:
+            jobs_to_check = [
+                (preferred_job, jobs[preferred_job])
+            ]
 
         results = []
 
+        for job_name, required_skills in jobs_to_check:
+            matching_skills = [
+                skill for skill in required_skills
+                if skill.casefold() in user_skills
+            ]
 
-        # ====================================================
-        # COMPARE USER SKILLS WITH JOB SKILLS
-        # ====================================================
+            missing_skills = [
+                skill for skill in required_skills
+                if skill.casefold() not in user_skills
+            ]
 
-        for job_name, required_skills in jobs.items():
-
-            matching_skills = []
-
-            missing_skills = []
-
-
-            for skill in required_skills:
-
-                if skill.lower() in user_skills:
-
-                    matching_skills.append(skill)
-
-                else:
-
-                    missing_skills.append(skill)
-
-
-            # Calculate percentage
-
-            match_percentage = round(
-                (
-                    len(matching_skills)
-                    /
-                    len(required_skills)
-                ) * 100
+            score = round(
+                len(matching_skills) / len(required_skills) * 100
             )
 
-
             results.append({
-
                 "job": job_name,
-
-                "score": match_percentage,
-
+                "score": score,
                 "matching": matching_skills,
-
-                "missing": missing_skills
-
+                "missing": missing_skills,
+                "required": required_skills
             })
 
-
-        # ====================================================
-        # SORT BY HIGHEST MATCH
-        # ====================================================
-
         results.sort(
-            key=lambda x: x["score"],
+            key=lambda item: item["score"],
             reverse=True
         )
 
-
-        # ====================================================
-        # PREFERRED JOB HANDLING
-        # ====================================================
-
-        if preferred_job != "No Preference":
-
-            preferred_result = None
-
-            other_results = []
-
-            for result in results:
-
-                if result["job"] == preferred_job:
-
-                    preferred_result = result
-
-                else:
-
-                    other_results.append(result)
-
-
-            if preferred_result:
-
-                results = [
-                    preferred_result
-                ] + other_results
-
-
-        # ====================================================
-        # DISPLAY USER INFORMATION
-        # ====================================================
-
+        # =================================================
+        # CANDIDATE SUMMARY
+        # =================================================
         st.divider()
+        st.success(f"Welcome, {name.strip()}! 🎉")
 
-        st.success(
-            f"Welcome {name}! 🎉"
-        )
+        if email.strip():
+            st.write(f"📧 Email: {email.strip()}")
 
-        if email:
-
-            st.write(
-                f"📧 Email: **{email}**"
-            )
-
-
-        # ====================================================
-        # BEST MATCH
-        # ====================================================
-
+        # =================================================
+        # BEST JOB MATCH
+        # =================================================
         best_job = results[0]
 
-
         st.header("🏆 Best Job Match")
-
 
         st.markdown(
             f"""
             <div class="card">
-
-            <div class="job-title">
-            {best_job["job"]}
-            </div>
-
-            <div class="match-score">
-            Match Score: {best_job["score"]}%
-            </div>
-
+                <div class="job-title">{best_job["job"]}</div>
+                <div class="match-score">
+                    Match Score: {best_job["score"]}%
+                </div>
+                <p>Matching skills: {len(best_job["matching"])}
+                out of {len(best_job["required"])}</p>
             </div>
             """,
             unsafe_allow_html=True
         )
 
+        st.progress(best_job["score"] / 100)
 
-        st.progress(
-            best_job["score"] / 100
-        )
-
-
-        # ====================================================
+        # =================================================
         # JOB RECOMMENDATIONS
-        # ====================================================
-
+        # =================================================
         st.header("📊 Job Recommendations")
 
-
-        for index, result in enumerate(results, 1):
-
-            st.markdown(
-                f"""
-                <div class="card">
-
-                <div class="job-title">
-                {index}. {result["job"]}
-                </div>
-
-                <div class="match-score">
-                Match: {result["score"]}%
-                </div>
-
-                </div>
-                """,
-                unsafe_allow_html=True
+        if preferred_job != "No Preference":
+            st.caption(
+                f"Showing results only for your selected role: "
+                f"{preferred_job}."
+            )
+        else:
+            st.caption(
+                "All job roles are ranked from highest to lowest match."
             )
 
+        for index, result in enumerate(results, start=1):
 
-            st.progress(
-                result["score"] / 100
-            )
-
-
-            col1, col2 = st.columns(2)
-
-
-            # ---------------- MATCHING SKILLS ----------------
-
-            with col1:
-
-                st.subheader("✅ Matching Skills")
-
-                if result["matching"]:
-
-                    for skill in result["matching"]:
-
-                        st.write(
-                            f"✔️ {skill}"
-                        )
-
-                else:
-
-                    st.write(
-                        "No matching skills"
-                    )
-
-
-            # ---------------- MISSING SKILLS ----------------
-
-            with col2:
-
-                st.subheader("📚 Missing Skills")
-
-                if result["missing"]:
-
-                    for skill in result["missing"]:
-
-                        st.write(
-                            f"❌ {skill}"
-                        )
-
-                else:
-
-                    st.success(
-                        "You have all required skills!"
-                    )
-
-
-            st.divider()
-
-
-        # ====================================================
-        # LEARNING RECOMMENDATION
-        # ====================================================
-
-        st.header("📖 Recommended Learning")
-
-
-        if best_job["missing"]:
-
-            st.write(
-                f"To improve your chances of becoming a "
-                f"**{best_job['job']}**, you should learn:"
-            )
-
-
-            for skill in best_job["missing"]:
-
-                st.info(
-                    f"📘 Learn {skill}"
+            with st.container(border=True):
+                st.markdown(
+                    f"""
+                    <div class="job-title">
+                        {index}. {result["job"]}
+                    </div>
+                    <div class="match-score">
+                        Match: {result["score"]}%
+                    </div>
+                    """,
+                    unsafe_allow_html=True
                 )
 
+                st.progress(result["score"] / 100)
 
-        else:
+                col1, col2 = st.columns(2)
 
-            st.success(
-                "🎉 Excellent! You already have all "
-                "the required skills for your best match."
+                with col1:
+                    st.subheader("✅ Matching Skills")
+
+                    if result["matching"]:
+                        for skill in result["matching"]:
+                            st.write(f"✔️ {skill}")
+                    else:
+                        st.write("No matching skills yet.")
+
+                with col2:
+                    st.subheader("📚 Missing Skills")
+
+                    if result["missing"]:
+                        for skill in result["missing"]:
+                            st.write(f"❌ {skill}")
+                    else:
+                        st.success("You have all required skills!")
+
+        # =================================================
+        # RECOMMENDED LEARNING
+        # =================================================
+        st.divider()
+        st.header("📖 Recommended Learning")
+
+        if best_job["missing"]:
+            st.write(
+                f"To improve your match for **{best_job['job']}**, "
+                "focus on learning these skills:"
             )
 
+            for skill in best_job["missing"]:
+                st.info(f"📘 Learn {skill}")
 
-        # ====================================================
-        # CAREER MESSAGE
-        # ====================================================
+        else:
+            st.success(
+                "🎉 You have all the listed skills for this job role!"
+            )
 
+        # =================================================
+        # CAREER ADVICE
+        # =================================================
         st.header("💡 Career Advice")
 
-
         if best_job["score"] >= 80:
-
             st.success(
-                "You are highly suitable for this job role. "
-                "Focus on projects, internships and interview preparation."
+                "You have a strong skill match. Build projects, "
+                "gain practical experience, and prepare for interviews."
             )
 
         elif best_job["score"] >= 50:
-
             st.warning(
-                "You have a good foundation. "
-                "Learn the missing skills and build practical projects."
+                "You have a reasonable foundation. Learn the missing "
+                "skills and practise with small projects."
             )
 
         else:
-
             st.info(
-                "You need to develop more relevant skills. "
-                "Start with the missing skills and practice through projects."
+                "Start with the missing skills, practise regularly, "
+                "and build projects to strengthen your profile."
             )
 
+        st.caption(
+            "Match percentages are calculated from the predefined "
+            "skills for each job role. They do not guarantee employment."
+        )
 
-# ============================================================
+# =========================================================
 # SIDEBAR
-# ============================================================
-
-st.sidebar.title("💼 About Project")
+# =========================================================
+st.sidebar.title("💼 About This Project")
 
 st.sidebar.write(
-    """
-    Skill-to-Job Matcher is an intelligent career
-    recommendation mini project.
-
-    It compares the user's skills with the skills
-    required for different job roles and recommends
-    suitable career opportunities.
-    """
+    "Skill-to-Job Matcher compares your selected skills with "
+    "predefined job requirements and identifies possible skill gaps."
 )
 
-
 st.sidebar.subheader("Features")
-
 st.sidebar.write("✅ Skill Matching")
-st.sidebar.write("✅ Job Recommendation")
+st.sidebar.write("✅ Job Recommendations")
 st.sidebar.write("✅ Match Percentage")
 st.sidebar.write("✅ Missing Skill Analysis")
-st.sidebar.write("✅ Learning Recommendation")
+st.sidebar.write("✅ Recommended Learning")
 st.sidebar.write("✅ Career Advice")
 
-
-st.sidebar.subheader("Technology")
-
+st.sidebar.subheader("Technologies")
 st.sidebar.write("🐍 Python")
 st.sidebar.write("🎨 Streamlit")
 
+st.sidebar.divider()
+st.sidebar.caption("Skill-to-Job Matcher | Mini Project")
 
-# ============================================================
+# =========================================================
 # FOOTER
-# ============================================================
-
-st.markdown("---")
-
+# =========================================================
+st.divider()
 st.caption(
-    "Skill-to-Job Matcher | Python + Streamlit Mini Project"
+    "Skill-to-Job Matcher | Built with Python and Streamlit"
 )
